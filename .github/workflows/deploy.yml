@@ -1,44 +1,43 @@
 name: 🚀 Deploy FastAPI & Frontend to AWS
 
-# 🔸 When to trigger this workflow
 on:
   push:
     branches:
-      - main   # Every time you push to the main branch
+      - main   # Runs every time you push to main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest    # GitHub runs this on a Linux VM
+    runs-on: ubuntu-latest
 
     steps:
-      # ✅ Step 1: Copy the repository into GitHub Actions runner
+      # ✅ Step 1: Checkout repository
       - name: 🧩 Checkout repository
         uses: actions/checkout@v3
 
-      # ✅ Step 2: Configure AWS credentials (from GitHub Secrets)
+      # ✅ Step 2: Configure AWS credentials
       - name: ⚙️ Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ap-south-1   # Change if your AWS region is different
 
-      # ✅ Step 3: Upload frontend files to S3 bucket
+      # ✅ Step 3: Upload frontend to S3
       - name: 📦 Upload frontend to S3
         run: |
           aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }} --delete
 
-     - name: 🚀 Deploy FastAPI backend to EC2
-  env:
-    PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-    HOST: ec2-user@<your-ec2-public-ip>   # Replace with your EC2 IP
-  run: |
-    echo "$PRIVATE_KEY" > private_key.pem
-    chmod 600 private_key.pem
-    ssh -o StrictHostKeyChecking=no -i private_key.pem $HOST "
-      cd /home/ec2-user/new_questions &&
-      git pull origin main &&
-      source venv/bin/activate &&
-      sudo systemctl restart fastapi
-    "
-
+      # ✅ Step 4: Deploy FastAPI backend to EC2
+      - name: 🚀 Deploy FastAPI backend to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ec2-user@65.2.150.98   # 🟢 Replace with your actual EC2 public IP
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $HOST "
+            cd /home/ec2-user/new_questions &&
+            git pull origin main &&
+            source venv/bin/activate &&
+            sudo systemctl restart fastapi
+          "
