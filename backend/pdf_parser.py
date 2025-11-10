@@ -1,0 +1,11 @@
+def extract_text_from_pdf(file_path: str) -> str:
+    try:
+        import fitz  
+    except ImportError as exc:
+        raise RuntimeError("PyMuPDF (fitz) is required to parse PDFs. Install via 'pip install pymupdf'.") from exc
+
+    doc = fitz.open(file_path)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    return text

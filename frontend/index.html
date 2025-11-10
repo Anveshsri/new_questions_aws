@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCQ Exam Portal</title>
+
+  <!-- ✅ FIX 1: Remove /static prefix so it works in S3 -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* === Added styling for left-aligned MCQ options === */
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 15px;
+      margin-left: 40px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .option input[type="radio"] {
+      margin: 0;
+      transform: scale(1.2);
+      accent-color: #007bff;
+    }
+
+    .question-box {
+      text-align: left;
+    }
+
+    #timer-box {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e63946;
+      background: #fff4f4;
+      border: 1px solid #ffb3b3;
+      padding: 10px 15px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page 1: Login/Register Selection -->
+  <div id="page-welcome" class="card">
+    <h1>MCQ Exam Portal</h1>
+    <p class="muted">Welcome! Please choose an option:</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+      <button onclick="showLoginForm()" style="padding:12px;">Sign In</button>
+      <button onclick="showRegisterForm()" class="secondary" style="padding:12px;">Create Account</button>
+    </div>
+  </div>
+
+  <!-- Page 2: Login Form -->
+  <div id="page-login" class="card hidden">
+    <h1>Sign In</h1>
+    <label>Email</label>
+    <input id="loginEmail" type="email" placeholder="you@example.com" required>
+    <label>Password</label>
+    <input id="loginPassword" type="password" placeholder="Enter your password" required>
+    <div style="display:flex;justify-content:space-between;gap:10px;">
+      <button class="secondary" onclick="backToWelcome()">Back</button>
+      <button onclick="loginUser()">Sign In</button>
+    </div>
+  </div>
+
+  <!-- Page 3: Registration Form -->
+  <div id="page-register" class="card hidden">
+    <h1>Create Account</h1>
+    <label>Full Name</label>
+    <input id="regName" type="text" placeholder="Enter your full name" required>
+    <label>Email</label>
+    <input id="regEmail" type="email" placeholder="you@example.com" required>
+    <label>Password</label>
+    <input id="regPassword" type="password" placeholder="Create a password" required>
+    <label>Confirm Password</label>
+    <input id="regConfirmPassword" type="password" placeholder="Confirm your password" required>
+    <div style="display:flex;justify-content:space-between;gap:10px;">
+      <button class="secondary" onclick="backToWelcome()">Back</button>
+      <button onclick="registerUser()">Create Account</button>
+    </div>
+  </div>
+
+  <!-- Page 4: Email Verification -->
+  <div id="page-verify" class="card hidden">
+    <h1>Verify Email</h1>
+    <p id="verifyEmail" class="muted" style="margin-top:-8px"></p>
+    <label>Verification Code</label>
+    <input id="verifyOtp" type="text" placeholder="Enter verification code" required>
+    <div style="display:flex;justify-content:space-between;gap:10px;">
+      <button class="secondary" onclick="backToRegister()">Back</button>
+      <button onclick="verifyEmail()">Verify</button>
+    </div>
+  </div>
+
+  <!-- Page 5: Exam Page -->
+  <div id="page-exam" class="hidden" style="max-width:1100px;margin:auto;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h2 id="userInfo" style="margin:0"></h2>
+      <span id="progress" class="muted"></span>
+    </div>
+
+    <div class="exam-layout">
+      <!-- LEFT SIDE: Question Area -->
+      <div class="question-box">
+        <div id="questionContainer"></div>
+
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-top:12px;">
+          <button class="secondary" id="prevBtn" onclick="prevQuestion()">Previous</button>
+          <div style="flex:1"></div>
+          <button id="submitBtn" onclick="submitAnswer()">Submit & Next</button>
+        </div>
+
+        <div id="examFeedback" class="muted" style="margin-top:8px"></div>
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="right-side-container">
+        <div id="timer-box">
+          ⏰ Time Left: <span id="timer">10:00</span>
+        </div>
+        <div id="userInfoFixed" class="user-info-fixed hidden"></div>
+        <div class="palette-box">
+          <h3>Question Palette</h3>
+          <div id="questionPalette" class="palette-grid"></div>
+          <div class="legend">
+            <div><span class="legend-box green"></span> Answered</div>
+            <div><span class="legend-box red"></span> Viewed</div>
+            <div><span class="legend-box grey"></span> Not Viewed</div>
+          </div>
+          <button id="finalSubmit" class="submit-btn" onclick="finishExam()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 6: Result -->
+  <div id="page-result" class="card hidden">
+    <h1>Test Result</h1>
+    <p id="resultText"></p>
+    <div style="justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="goHome()">Back to Start</button>
+    </div>
+  </div>
+
+  <!-- ✅ FIX 2: Correct API link and load order -->
+  <script>
+    window.API_BASE = "http://65.2.150.98:8000";
+  </script>
+  <script src="app_v2.js?v=2"></script> <!-- cache-busted -->
+
+  <!-- ✅ FIX 3: Removed duplicate totalTime variable -->
+</body>
+</html>

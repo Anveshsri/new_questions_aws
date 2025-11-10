@@ -1,0 +1,292 @@
+/* General Page Styles */
+body {
+  font-family: Arial, sans-serif;
+  background: #f6f7fb;
+  margin: 0;
+  padding: 0;
+}
+
+/* Card Containers (used for login, OTP, result pages) */
+.card {
+  width: 380px;
+  margin: 80px auto;
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+  display: none;
+}
+
+/* Text Styles */
+h1, h2, h3 {
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: #444;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+button {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+button.secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+button.secondary:hover {
+  background: #d6d6d6;
+}
+
+.muted {
+  color: #777;
+  font-size: 14px;
+}
+
+/* Exam Layout */
+.exam-layout {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+/* Question Area */
+.question-box {
+  width: 65%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  text-align: left; /* Align everything to the left */
+}
+
+.question-box p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Options - custom radio buttons */
+.opts { 
+  margin-top: 20px; 
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.option:hover {
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
+}
+
+/* Hide default radio button */
+.option input[type="radio"] {
+  display: none;
+}
+
+/* Custom radio button */
+.option .custom-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background: white;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+/* Custom radio button when checked */
+.option input[type="radio"]:checked + .custom-radio {
+  border-color: #007bff;
+  background: #007bff;
+}
+
+/* Inner dot when checked */
+.option input[type="radio"]:checked + .custom-radio::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.option label {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  font-weight: normal;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Palette Area (Right Side) */
+.palette-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  height: fit-content;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+  max-width: 240px;
+}
+
+/* Individual Question Number Box */
+.palette-btn {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s;
+}
+
+.palette-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Palette Color States */
+.green {
+  background-color: #28a745; /* Answered */
+}
+
+.red {
+  background-color: #dc3545; /* Viewed but not answered */
+}
+
+.grey {
+  background-color: #6c757d; /* Not viewed */
+}
+
+/* Legend */
+.legend {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #444;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+/* Result Page */
+#resultText {
+  font-size: 16px;
+  color: #333;
+  margin: 20px 0;
+}
+
+/* Submit Button at End */
+.submit-btn {
+  background: #007bff;
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.submit-btn:hover {
+  background: #0056b3;
+}
+
+/* Right side container */
+.right-side-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 280px;
+}
+
+.user-info-fixed {
+  position: relative;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-weight: bold;
+  color: #333;
+  font-size: 13px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-info-fixed div {
+  margin-bottom: 4px;
+}
+
+.user-info-fixed div:last-child {
+  margin-bottom: 0;
+}
+
+#timer-box {
+  font-size: 22px;
+  font-weight: bold;
+  color: red;
+  text-align: right;
+  margin: 10px 20px;
+}
