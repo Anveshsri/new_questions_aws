@@ -27,19 +27,18 @@ jobs:
         run: |
           aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }} --delete
 
- # ✅ Step 4: Deploy FastAPI backend to EC2
+       # ✅ Step 4: Deploy FastAPI backend to EC2
       - name: 🚀 Deploy FastAPI backend to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          HOST: ec2-user@65.2.150.98   # 🟢 your EC2 IP here
+          HOST: ubuntu@65.2.150.98   # ✅ Correct for your Ubuntu EC2
         run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          # Fix Windows line endings if any (GitHub sometimes adds them)
-          sed -i 's/\r$//' private_key.pem
+          echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
           chmod 600 private_key.pem
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $HOST "
-            cd /home/ec2-user/new_questions &&
+          ssh -v -o StrictHostKeyChecking=no -i private_key.pem $HOST "
+            cd /home/ubuntu/new_questions &&
             git pull origin main &&
             source venv/bin/activate &&
             sudo systemctl restart fastapi
           "
+
