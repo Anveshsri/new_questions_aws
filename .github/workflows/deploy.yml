@@ -1,43 +1,11 @@
-name: 🚀 Deploy FastAPI & Frontend to AWS
-
-on:
-  push:
+name: 🚀 Deploy FastAPI & Front
     branches:
       - main   # Runs every time you push to main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-# ✅ Step 2: Configure AWS credentials
-      - name: ⚙️ Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-
-      # ✅ Step 3: Upload frontend to S3
-      - name: 📦 Upload frontend to S3
-        run: |
-          aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }} --delete
-
-      # ✅ Step 4: Deploy backend to EC2
-      - name: 🚀 Deploy FastAPI backend to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          HOST: ubuntu@65.2.150.98   # Your EC2 public IP
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          sed -i 's/\r$//' private_key.pem
-          chmod 600 private_key.pem
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $HOST "
-            cd /home/ubuntu/new_questions &&
-            git pull origin main &&
-            source venv/bin/activate &&
-            pip install -r requirements.txt &&
-            sudo systemctl restart fastapi
-          "
-    steps:
+steps:
       # ✅ Step 1: Checkout repository
       - name: 🧩 Checkout repository
         uses: actions/checkout@v3
@@ -55,11 +23,11 @@ jobs:
         run: |
           aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET }} --delete
 
-       # ✅ Step 4: Deploy FastAPI backend to EC2
+      # ✅ Step 4: Deploy FastAPI backend to EC2
       - name: 🚀 Deploy FastAPI backend to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          HOST: ubuntu@65.2.150.98   # ✅ Correct for your Ubuntu EC2
+          HOST: ubuntu@65.2.150.98   # ✅ Correct username for Ubuntu AMI
         run: |
           echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
           chmod 600 private_key.pem
@@ -67,6 +35,6 @@ jobs:
             cd /home/ubuntu/new_questions &&
             git pull origin main &&
             source venv/bin/activate &&
+            pip install -r requirements.txt &&
             sudo systemctl restart fastapi
           "
-
