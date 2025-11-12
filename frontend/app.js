@@ -387,6 +387,7 @@ function finishExam() {
   });
 
   const notAttempted = total - attempted;
+  const incorrect = attempted - correct;
   const percentage = Math.round((correct / total) * 100);
 
   // User details
@@ -399,6 +400,31 @@ function finishExam() {
   // Switch to result page
   document.getElementById('page-exam').classList.add('hidden');
   document.getElementById('page-result').classList.remove('hidden');
+
+  const summaryRows = examState.questions.map((q, idx) => {
+    const userAnsRaw = (examState.answers[idx] || '').trim();
+    const userAns = userAnsRaw ? userAnsRaw.toUpperCase() : '';
+    const correctAns = (q.correct_answer || '').toString().trim().toUpperCase();
+    let status = 'Not Attempted';
+    if (userAns) {
+      status = userAns === correctAns ? 'Correct' : 'Incorrect';
+    }
+
+    const statusClass = status === 'Correct'
+      ? 'row-correct'
+      : status === 'Incorrect'
+        ? 'row-incorrect'
+        : 'row-skip';
+
+    return `
+      <tr class="${statusClass}">
+        <td>Q${idx + 1}</td>
+        <td>${userAns || '—'}</td>
+        <td>${correctAns || '—'}</td>
+        <td>${status}</td>
+      </tr>
+    `;
+  }).join('');
 
   // Show result summary
   document.getElementById('resultText').innerHTML = `
@@ -420,13 +446,51 @@ function finishExam() {
         <div style="font-size: 16px; color: #2d5a2d;">
           <p><strong>Total Questions:</strong> ${total}</p>
           <p><strong>Attempted:</strong> ${attempted}</p>
+          <p><strong>Correct:</strong> ${correct}</p>
+          <p><strong>Incorrect:</strong> ${incorrect}</p>
           <p><strong>Not Attempted:</strong> ${notAttempted}</p>
           <p><strong>Marks Scored:</strong> ${correct}</p>
           <p><strong>Percentage:</strong> ${percentage}%</p>
         </div>
       </div>
+
+      <div style="background: #ffffff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px;">
+        <h4 style="margin: 0 0 12px 0; color: #333;">📋 Question-wise Summary</h4>
+        <div style="overflow-x: auto;">
+          <table class="result-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="background: #f1f3f5;">
+                <th style="text-align: left; padding: 8px; border-bottom: 1px solid #d9dde3;">Question</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 1px solid #d9dde3;">Your Answer</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 1px solid #d9dde3;">Correct Answer</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 1px solid #d9dde3;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${summaryRows}
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size: 12px; color: #666; margin-top: 8px;">
+          Rows in green are correct answers, red are incorrect, grey were not attempted.
+        </p>
+      </div>
     </div>
   `;
+
+  let styleEl = document.getElementById('result-table-styles');
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'result-table-styles';
+    styleEl.textContent = `
+      #page-result .result-table tbody tr.row-correct { background: #e6f4ea; color: #256029; }
+      #page-result .result-table tbody tr.row-incorrect { background: #ffeaea; color: #a3262a; }
+      #page-result .result-table tbody tr.row-skip { background: #f5f5f5; color: #555; }
+      #page-result .result-table tbody tr td { padding: 8px; border-bottom: 1px solid #eceff1; }
+      #page-result .result-table tbody tr:last-child td { border-bottom: none; }
+    `;
+    document.head.appendChild(styleEl);
+  }
 }
 
 // ========== NAVIGATION ==========
