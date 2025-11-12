@@ -1,11 +1,15 @@
-name: 🚀 Deploy FastAPI & Front
+name: 🚀 Deploy FastAPI & Frontend to AWS
+
+on:
+  push:
     branches:
       - main   # Runs every time you push to main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-steps:
+
+    steps:
       # ✅ Step 1: Checkout repository
       - name: 🧩 Checkout repository
         uses: actions/checkout@v3
@@ -27,7 +31,7 @@ steps:
       - name: 🚀 Deploy FastAPI backend to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          HOST: ubuntu@65.2.150.98   # ✅ Correct username for Ubuntu AMI
+          HOST: ubuntu@65.2.150.98   # ✅ Correct username for Ubuntu EC2
         run: |
           echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
           chmod 600 private_key.pem
@@ -38,3 +42,4 @@ steps:
             pip install -r requirements.txt &&
             sudo systemctl restart fastapi
           "
+
